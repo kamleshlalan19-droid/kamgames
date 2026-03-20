@@ -584,7 +584,7 @@
       <div class="controls-wrapper">
         <div class="search-container">
           <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" id="searchBar" placeholder="Search games..." oninput="filterZones()">
+          <input type="text" id="searchBar" placeholder="Search" oninput="filterZones()">
         </div>
         <select id="sortOptions" onchange="sortZones()">
           <option value="popular">Popular</option>
@@ -768,8 +768,8 @@
       
       if (list.length === 0) {
         if (targetContainer === container) {
-            targetContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">No games found matching your criteria.</div>`;
-            zoneCount.textContent = "0 Games";
+            targetContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">No stuff found matching your criteria.</div>`;
+            zoneCount.textContent = "0 stuff man, why???";
         }
         return;
       }
@@ -807,7 +807,7 @@
 
       targetContainer.appendChild(fragment);
       if (targetContainer === container) {
-        zoneCount.textContent = `${list.length} Games Available`;
+        zoneCount.textContent = `${list.length} stuff`;
       }
     }
 
