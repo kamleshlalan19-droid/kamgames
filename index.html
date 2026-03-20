@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>gn-math — Premium Arcade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Keep external gnmath.js for compatibility -->
+  <script src="https://cdn.jsdelivr.net/gh/gn-math/gn-math.github.io@main/gnmath.js"></script>
+
+  <style>
+    :root {
+      /* Premium Palette - Slate/Dark Theme Default */
+      --bg-body: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-surface-hover: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-color: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --border-color: #334155;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --header-height: 80px;
+    }
+
+    /* Light Mode Variables (Optional, if user toggles) */
+    body.light-mode {
+      --bg-body: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-hover: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --accent-color: #0284c7;
+      --accent-hover: #0369a1;
+      --border-color: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-body);
+      color: var(--text-primary);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background-color: rgba(15, 23, 42, 0.8); /* Glass effect base */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      height: var(--header-height);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+    }
+
+    body.light-mode header {
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .header-content {
+      width: 100%;
+      max-width: 1800px; /* Wide container for 8 columns */
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .logo span { color: var(--accent-color); }
+
+    /* Search & Controls */
+    .controls-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+      max-width: 800px;
+    }
+
+    .search-container {
+      flex: 1;
+      position: relative;
+    }
+
+    #searchBar {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    #searchBar:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+    }
+
+    /* Search Icon Placeholder */
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+
+    select#sortOptions {
+      padding: 0.75rem 2rem 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem;
+    }
+
+    button#settings {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    button#settings:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--text-secondary);
+    }
+
+    /* Main Grid */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    #zoneCount {
+      margin-bottom: 1.5rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    #container {
+      display: grid;
+      /* Default responsive grid */
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* 8 per row on large screens as requested */
+    @media (min-width: 1600px) {
+      #container {
+        grid-template-columns: repeat(8, 1fr);
+      }
+    }
+    
+    /* Fallback for smaller desktops to still look dense */
+    @media (min-width: 1200px) and (max-width: 1599px) {
+      #container {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+
+    /* Card Styles */
+    .zone-item {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .zone-item:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--accent-color);
+    }
+
+    .zone-item img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      background-color: var(--bg-surface-hover);
+      transition: transform 0.3s ease;
+    }
+    
+    .zone-item:hover img {
+      transform: scale(1.05);
+    }
+
+    .zone-info {
+      padding: 1rem;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-surface);
+      z-index: 1;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .zone-item button {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-align: center;
+      width: 100%;
+      padding: 0;
+      /* Truncate text */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Zone Viewer (Modal) */
+    #zoneViewer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-body);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+    }
+
+    .zone-header {
+      height: 60px;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+    }
+
+    .zone-title h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+
+    .zone-title a {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .zone-controls {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .zone-controls button {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .zone-controls button:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--text-secondary);
+    }
+
+    .zone-controls button.primary-action {
+      background: var(--accent-color);
+      border-color: var(--accent-color);
+      color: white;
+    }
+    
+    .zone-controls button.primary-action:hover {
+      background: var(--accent-hover);
+    }
+
+    #zoneFrame {
+      flex-grow: 1;
+      border: none;
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+
+    /* Popup */
+    #popupOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .popup {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 90%;
+      max-width: 480px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      animation: popupIn 0.2s ease-out;
+    }
+
+    @keyframes popupIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .popup-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #popupTitle {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    #popupClose {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    #popupClose:hover {
+      background: var(--bg-surface-hover);
+      color: var(--text-primary);
+    }
+
+    #popupBody {
+      padding: 1.5rem;
+      overflow-y: auto;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    #popupBody input[type="text"], 
+    #popupBody input[type="file"] {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-body);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+    }
+
+    #settings-button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: var(--bg-surface-hover);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      transition: all 0.2s;
+    }
+
+    #settings-button:hover {
+      background-color: var(--border-color);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      padding: 2rem;
+      margin-top: auto;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a, .footer-links label {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .footer-links a:hover, .footer-links label:hover {
+      color: var(--accent-color);
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+      }
+      
+      header {
+        height: auto;
+        position: relative;
+      }
+
+      .controls-wrapper {
+        width: 100%;
+        flex-direction: column;
+      }
+
+      .search-container { width: 100%; }
+      #sortOptions { width: 100%; }
+      #settings { width: 100%; }
+
+      #container, #favorites-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 per row on mobile */
+        gap: 1rem;
+      }
+      
+      .zone-item button {
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Favorites Section */
+    #favorites-section {
+      margin-bottom: 3rem;
+      display: none; /* Hidden by default until populated */
+    }
+
+    .favorites-header {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      border-bottom: 2px solid white;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.5rem;
+      width: 100%;
+    }
+
+    #favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    /* Force 8 columns for favorites on large screens to match request */
+    @media (min-width: 1600px) {
+      #favorites-grid {
+        grid-template-columns: repeat(8, 1fr);
+      }
+    }
+    @media (min-width: 1200px) and (max-width: 1599px) {
+      #favorites-grid {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+    /* Top Banner */
+    .top-banner {
+      background: linear-gradient(135deg, #7dd3fc, #60a5fa);
+      color: black;
+      text-align: center;
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.01em;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .banner-close {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0 0.5rem;
+      line-height: 1;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .banner-close:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body> <!-- Removed default dark-mode class, handled by CSS variables default -->
+  <header>
+    <div class="header-content">
+      <a href="#" class="logo" onclick="location.reload(); return false;">
+        gn-math <span>Arcade</span>
+      </a>
+      <div class="controls-wrapper">
+        <div class="search-container">
+          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="searchBar" placeholder="Search games..." oninput="filterZones()">
+        </div>
+        <select id="sortOptions" onchange="sortZones()">
+          <option value="popular">Popular</option>
+          <option value="name">Name</option>
+          <option value="id">ID</option>
+        </select>
+        <button id="settings" title="Settings">Settings</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="favorites-section">
+      <h2 class="favorites-header">Creator's Favorites</h2>
+      <div id="favorites-grid"></div>
+    </div>
+
+    <div id="zoneCount">Initializing...</div>
+    <div id="container">
+      <!-- Loading Skeleton could go here -->
+      <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-secondary);">
+        Loading library...
+      </div>
+    </div>
+  </main>
+
+  <div id="zoneViewer">
+    <div class="zone-header">
+      <div class="zone-title">
+        <h2 id="zoneName">Game Title</h2>
+        <span id="zoneId" style="display:none"></span>
+        <a id="zoneAuthor" href="#" target="_blank">Developer</a>
+      </div>
+      <div class="zone-controls">
+        <button onclick="fullscreenZone()">Fullscreen</button>
+        <button onclick="aboutBlank()">New Tab</button>
+        <button onclick="downloadZone()">Download</button>
+        <button class="primary-action" onclick="closeZone()">Close</button>
+      </div>
+    </div>
+    <iframe id="zoneFrame"></iframe>
+  </div>
+
+  <div id="popupOverlay">
+    <div class="popup">
+      <div class="popup-header">
+        <h3 id="popupTitle">Title</h3>
+        <button id="popupClose" onclick="closePopup()">×</button>
+      </div>
+      <div id="popupBody">Content</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="#" onclick="showContact(); return false;">Contact</a>
+      <a href="#" onclick="loadPrivacy(); return false;">Privacy Policy</a>
+      <a href="javascript:saveData()">Export Data</a>
+      <label for="importData">Import Data</label>
+      <input type="file" id="importData" style="display: none;" onchange="loadData(event)">
+    </div>
+  </footer>
+
+  <script>
+    // Configuration
+    const zonesURL = "https://cdn.jsdelivr.net/gh/gn-math/assets@main/zones.json";
+    const coverURL = "https://cdn.jsdelivr.net/gh/gn-math/covers@main";
+    const htmlURL = "https://cdn.jsdelivr.net/gh/gn-math/html@main";
+
+    // DOM Elements
+    const container = document.getElementById('container');
+    const favoritesSection = document.getElementById('favorites-section');
+    const favoritesGrid = document.getElementById('favorites-grid');
+    const zoneViewer = document.getElementById('zoneViewer');
+    let zoneFrame = document.getElementById('zoneFrame');
+    const searchBar = document.getElementById('searchBar');
+    const sortOptions = document.getElementById('sortOptions');
+    const zoneCount = document.getElementById('zoneCount');
+    
+    // State
+    let zones = [];
+    let popularityData = {};
+    
+    // Creator's Favorites List (lowercase for easier matching)
+    const favoriteNames = [
+      "ragdoll archers", 
+      "slowroads", 
+      "bad parenting", 
+      "basket random", 
+      "crazy cattle 3d", 
+      "bad time simulator", 
+      "time shooter 2", 
+      "rooftop snipers"
+    ];
+
+    // Initialize
+    async function listZones() {
+      try {
+        zoneCount.textContent = "Fetching library...";
+        const response = await fetch(zonesURL + "?t=" + Date.now());
+        if (!response.ok) throw new Error(`Server returned ${response.status}`);
+        
+        zones = await response.json();
+        
+        // Process Favorites
+        processFavorites();
+        
+        // Try to fetch popularity, but don't block if it fails
+        fetchPopularity().then(() => sortZones()).catch(() => sortZones());
+        
+        // Handle URL params
+        const search = new URLSearchParams(window.location.search);
+        const id = search.get('id');
+        if (id) {
+          const zone = zones.find(z => String(z.id) === String(id));
+          if (zone) openZone(zone);
+        }
+      } catch (error) {
+        console.warn("Fetch failed, loading demo data for visualization:", error);
+        // Fallback data for design verification
+        zones = Array.from({ length: 16 }, (_, i) => ({
+          id: i,
+          name: `Demo Game ${i + 1}`,
+          cover: "", // Will trigger fallback image
+          url: "#",
+          author: "Demo Author"
+        }));
+        
+        // Mock favorites for demo
+        const demoFavorites = zones.slice(0, 8).map((z, i) => ({ ...z, name: favoriteNames[i] || z.name }));
+        displayZones(demoFavorites, favoritesGrid);
+        favoritesSection.style.display = "block";
+        
+        displayZones(zones);
+        zoneCount.textContent = "Demo Mode (Network Unavailable)";
+      }
+    }
+
+    function processFavorites() {
+      const favorites = favoriteNames.map(name => {
+        // Fuzzy match or exact match
+        return zones.find(z => (z.name || "").toLowerCase().includes(name.toLowerCase()));
+      }).filter(Boolean); // Remove undefined if not found
+
+      if (favorites.length > 0) {
+        displayZones(favorites, favoritesGrid);
+        favoritesSection.style.display = "block";
+      }
+    }
+
+    async function fetchPopularity() {
+      try {
+        const response = await fetch("https://data.jsdelivr.com/v1/stats/packages/gh/gn-math/html@main/files?period=year");
+        const data = await response.json();
+        data.forEach(file => {
+          const idMatch = file.name.match(/\/(\d+)\.html$/);
+          if (idMatch) {
+            const id = parseInt(idMatch[1]);
+            popularityData[id] = file.hits.total;
+          }
+        });
+      } catch (err) {
+        console.warn("Popularity data unavailable", err);
+      }
+    }
+
+    function sortZones() {
+      const sortBy = sortOptions.value;
+      if (sortBy === 'name') zones.sort((a, b) => a.name.localeCompare(b.name));
+      else if (sortBy === 'id') zones.sort((a, b) => a.id - b.id);
+      else if (sortBy === 'popular') zones.sort((a, b) => (popularityData[b.id] || 0) - (popularityData[a.id] || 0));
+      
+      // Always keep special IDs at bottom if needed, or just standard sort
+      zones.sort((a, b) => (a.id === -1 ? -1 : b.id === -1 ? 1 : 0));
+      
+      displayZones(zones);
+    }
+
+    function displayZones(list, targetContainer = container) {
+      targetContainer.innerHTML = "";
+      
+      if (list.length === 0) {
+        if (targetContainer === container) {
+            targetContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">No games found matching your criteria.</div>`;
+            zoneCount.textContent = "0 Games";
+        }
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+      
+      list.forEach(file => {
+        const zoneItem = document.createElement("div");
+        zoneItem.className = "zone-item";
+        zoneItem.onclick = () => openZone(file);
+        zoneItem.title = file.name;
+
+        // Image
+        const img = document.createElement("img");
+        img.loading = "lazy"; // Performance boost
+        img.src = file.cover.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
+        img.alt = file.name;
+        img.onerror = function() { this.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgZmlsbD0iIzMzNDE1NSI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIC8+PHRleHQgeD0iNTAiIHk9IjUwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk0YTNiOCIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='; }; // Fallback placeholder
+        zoneItem.appendChild(img);
+
+        // Info container
+        const info = document.createElement("div");
+        info.className = "zone-info";
+        
+        const button = document.createElement("button");
+        button.textContent = file.name;
+        // Prevent button click from triggering parent click twice, but allow it to open zone
+        button.onclick = (ev) => { ev.stopPropagation(); openZone(file); };
+        
+        info.appendChild(button);
+        zoneItem.appendChild(info);
+
+        fragment.appendChild(zoneItem);
+      });
+
+      targetContainer.appendChild(fragment);
+      if (targetContainer === container) {
+        zoneCount.textContent = `${list.length} Games Available`;
+      }
+    }
+
+    function filterZones() {
+      const q = (searchBar.value || "").toLowerCase();
+      const filtered = zones.filter(z => (z.name || "").toLowerCase().includes(q));
+      displayZones(filtered);
+    }
+
+    async function openZone(file) {
+      try {
+        if (!file) return;
+        
+        // External link handling
+        if (file.url && file.url.startsWith("http")) {
+          window.open(file.url, "_blank");
+          return;
+        }
+
+        const url = file.url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
+        
+        // Show viewer immediately with loading state
+        zoneViewer.style.display = "flex";
+        document.getElementById('zoneName').textContent = file.name || "Loading...";
+        document.getElementById('zoneId').textContent = file.id || "";
+        document.getElementById('zoneAuthor').textContent = file.author ? "by " + file.author : "";
+        if (file.authorLink) document.getElementById('zoneAuthor').href = file.authorLink;
+        else document.getElementById('zoneAuthor').removeAttribute('href');
+
+        // Fetch content
+        const response = await fetch(url + "?t=" + Date.now());
+        if (!response.ok) throw new Error("Failed to load game content");
+        const html = await response.text();
+
+        // Reset iframe
+        if (!zoneFrame || !zoneViewer.contains(zoneFrame)) {
+          zoneFrame = document.createElement("iframe");
+          zoneFrame.id = "zoneFrame";
+          zoneViewer.appendChild(zoneFrame);
+        }
+
+        // Inject content
+        try {
+          const doc = zoneFrame.contentDocument || zoneFrame.contentWindow.document;
+          doc.open();
+          doc.write(html);
+          doc.close();
+        } catch (e) {
+          console.warn("Cross-origin iframe restriction, opening in new tab fallback.");
+          window.open(url, "_blank");
+          closeZone();
+        }
+
+      } catch (err) {
+        alert("Failed to load game: " + err.message);
+        closeZone();
+      }
+    }
+
+    function closeZone() {
+      zoneViewer.style.display = "none";
+      if (zoneFrame && zoneViewer.contains(zoneFrame)) {
+        zoneViewer.removeChild(zoneFrame);
+      }
+      // Recreate clean iframe
+      zoneFrame = document.createElement("iframe");
+      zoneFrame.id = "zoneFrame";
+    }
+
+    async function aboutBlank() {
+      const id = document.getElementById('zoneId').textContent;
+      const zone = zones.find(z => String(z.id) === String(id));
+      if (zone) {
+        const url = zone.url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
+        
+        const win = window.open('about:blank', '_blank');
+        if (!win) return;
+
+        try {
+          const response = await fetch(url + "?t=" + Date.now());
+          if (!response.ok) throw new Error("Failed to load game content");
+          const html = await response.text();
+          
+          win.document.open();
+          win.document.write(html);
+          win.document.close();
+        } catch (e) {
+          console.error(e);
+          win.location.href = url;
+        }
+      }
+    }
+
+    async function downloadZone() {
+      const id = document.getElementById('zoneId').textContent;
+      const zone = zones.find(z => String(z.id) === String(id));
+      if (!zone) return;
+      
+      try {
+        const url = zone.url.replace("{COVER_URL}", coverURL).replace("{HTML_URL}", htmlURL);
+        const res = await fetch(url);
+        const text = await res.text();
+        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = (zone.name || "game") + ".html";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(a.href);
+      } catch (e) {
+        alert("Download failed");
+      }
+    }
+
+    function fullscreenZone() {
+      if (zoneFrame) {
+        if (zoneFrame.requestFullscreen) zoneFrame.requestFullscreen();
+        else if (zoneFrame.webkitRequestFullscreen) zoneFrame.webkitRequestFullscreen();
+      }
+    }
+
+    // Data Management
+    function saveData() {
+      const data = JSON.stringify(localStorage) + "\n\n|\n\n" + document.cookie;
+      const blob = new Blob([data], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `gn-math-backup-${Date.now()}.data`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    function loadData(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const content = e.target.result;
+        const parts = content.split("\n\n|\n\n");
+        try {
+          const parsed = JSON.parse(parts[0]);
+          for (let k in parsed) localStorage.setItem(k, parsed[k]);
+          if (parts[1]) {
+            parts[1].split("; ").forEach(c => document.cookie = c);
+          }
+          alert("Data imported successfully. Reloading...");
+          location.reload();
+        } catch (err) {
+          alert("Invalid data file.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Settings & UI
+    function toggleTheme() {
+      document.body.classList.toggle("light-mode");
+      // Save preference if needed, but keeping it simple for now
+    }
+
+    function cloakIcon(url) {
+      let link = document.querySelector("link[rel~='icon']");
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+      }
+      link.href = url || 'favicon.ico';
+    }
+
+    function cloakName(name) {
+      document.title = name || 'gn-math';
+    }
+
+    function tabCloak() {
+      closePopup();
+      showPopup("Tab Cloak", `
+        <label style="font-weight:600; display:block; margin-bottom:0.5rem">Tab Title</label>
+        <input type="text" placeholder="Google Drive" oninput="cloakName(this.value)">
+        
+        <label style="font-weight:600; display:block; margin-bottom:0.5rem; margin-top:1rem">Tab Icon URL</label>
+        <input type="text" placeholder="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" oninput="cloakIcon(this.value)">
+      `);
+    }
+
+    function showPopup(title, htmlContent) {
+      document.getElementById('popupTitle').textContent = title;
+      document.getElementById('popupBody').innerHTML = htmlContent;
+      document.getElementById('popupOverlay').style.display = "flex";
+    }
+
+    function closePopup() {
+      document.getElementById('popupOverlay').style.display = "none";
+    }
+
+    document.getElementById('settings').addEventListener('click', () => {
+      showPopup("Settings", `
+        <button id="settings-button" onclick="toggleTheme()">Toggle Light/Dark Mode</button>
+        <button id="settings-button" onclick="tabCloak()">Tab Cloak</button>
+      `);
+    });
+
+    function showContact() {
+      showPopup("Contact", `<p>Join our Discord: <a href="https://discord.gg/NAFw4ykZ7n" target="_blank" style="color:var(--accent-color)">discord.gg/NAFw4ykZ7n</a></p>`);
+    }
+
+    function loadPrivacy() {
+      showPopup("Privacy Policy", `
+        <div style="line-height:1.6">
+          <p>This site loads content from external CDNs (jsdelivr). Please refer to their privacy policies.</p>
+          <p>Local data (saves) are stored in your browser's LocalStorage.</p>
+        </div>
+      `);
+    }
+
+    // Hook file input
+    document.getElementById('importData').addEventListener('change', loadData);
+
+    function dismissBanner() {
+      const banner = document.getElementById('topBanner');
+      if (banner) {
+        banner.style.display = 'none';
+      }
+    }
+
+    // Start
+    listZones();
+  </script>
+</body>
+</html>
